@@ -26,7 +26,6 @@ async function getParticularCategory(req, res){
 
         const recipe = await Recipe.findByPk(id)
         const category = await recipe.getCategory()
-        console.log(category, "[[[[[[[[[[[[]]]]]]]]]]]]")
         jwt.sign({category: category}, 'secretkey', (err, token) => {
             res.json({
                 category: category

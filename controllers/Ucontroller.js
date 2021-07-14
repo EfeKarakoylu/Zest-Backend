@@ -7,7 +7,6 @@ const {User, Recipe} = model
 
 async function Register(req, res){
     let { name, password, password2, email} = req.body;
-    console.log(req.body)
     let msg = ''
     let userEmail = await User.findOne({ where: { email: email } });
     let userName = await User.findOne({where: {name: name}})
@@ -37,7 +36,6 @@ async function Register(req, res){
             email: email
         })
             .then( user => {
-                console.log('x')
             })
             .catch((err) => {
                 console.log(err)
@@ -86,7 +84,6 @@ async function getUserLogin(req, res){
         })
     }
     else{
-        console.log("getUserLogin else")
         return res.status(404).send()
     }
 }
@@ -219,13 +216,10 @@ async function updateUser(req, res){
     try{
         let {description} = req.body
         const user = await User.findByPk(req.data.user.id)
-        console.log("HEHEHEHEHHEHEHEHEHE", user)
-        console.log("HEHEHEHEHHEHEHEHEHE", req.body.imageKey)
-        console.log("HEHEHEHEHHEHEHEHEHE", req.body.description)
+
         user.description = description
         const image = await user.getZestImages()
-        console.log("HEHEHEHEHHEHEHEHEHE", image)
-        console.log("HEHEHEHEHHEHEHEHEHE", image[0].imageKey)
+
         if (image.length > 0){
             image[0].imageKey = req.body.imageKey
             await image[0].save()

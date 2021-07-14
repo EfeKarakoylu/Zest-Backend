@@ -77,8 +77,6 @@ async function createRecipe(req, res){
             .catch((err) => console.log(err))
     }
 
-    // console.log("HAHAHAHAHAHHAHAHAHAH", image.ownerId === theRecipe.id)
-    // console.log("HAHAHAHAHAHHAHAHAHAH", image)
 
 
     jwt.sign({msg: msg}, 'secretkey', (err, token) => {
@@ -108,8 +106,6 @@ async function getAllRecipes(req, res){
     try{
         let recipes = await Recipe.findAll({order: [['updatedAt', 'DESC']]});
         let {page} = req.query
-        console.log("HAHAHAHAHAHHAHAHA", page)
-        console.log("HAHAHAHAHAHHAHAHA", req.query.page)
         recipes = recipes.slice(0, page*9)
         jwt.sign({recipes: recipes}, 'secretkey', (err, token) => {
             res.json({
@@ -261,9 +257,6 @@ async function updateRecipe(req, res){
         // const image = await theRecipe.createZestImage({imageKey: req.body.imageKey})
         image[0].imageKey = req.body.imageKey
         await image[0].save()
-        // console.log("HAHAHAHAHAHHAHAHAHAH", image.ownerId === theRecipe.id)
-        // console.log("HAHAHAHAHAHHAHAHAHAH", image)
-
 
         let oldHashtags = await theRecipe.getHashtags()
         let {newHashtags} = req.body
@@ -416,12 +409,9 @@ async function postImage(req, res){
         // or change the size of the image sooo in your other projects
         //think about it
 
-        console.log("HAHHAHAHAHAHSDAHSDHASDAKDJADAS", req.file)
-        console.log("HAHHAHAHAHAHSDAHSDHASDAKDJADAS", req.description)
         const result = await uploadFile(req.file)
         await unlinkFile(req.file.path)
 
-        console.log(result, "HAHSFKLJASDGHFIASDUGFLASDF")
 
         return res.send(result.Key)
     }catch (err){
@@ -434,15 +424,13 @@ async function getImage(req, res){
         let id = req.params.id
         const recipe = await Recipe.findByPk(id)
         const image = await recipe.getZestImages()
-        console.log("HAAHASKDFJHASKLFDJHDSAFASFASDAF IMAGE",image)
-        console.log("HAAHASKDFJHASKLFDJHDSAFASFASDAF IMAGE KEY",image[0].imageKey)
+
 
         if (image === null){
             return res.send('sorry')
         }
         else{
             const readStream = await getFileStream(image[0].imageKey)
-            console.log("GETGETGETGETGETGETGET", readStream)
             readStream.pipe(res)
         }
 
